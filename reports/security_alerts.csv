@@ -1,0 +1,5 @@
+rule_name,severity,evidence,event_ids,analyst_note,alert_id
+Repeated Failed Logins,high,5 failed logins for user_003 from 203.0.113.50 within 10 minutes.,"evt_0121, evt_0122, evt_0123, evt_0124, evt_0125",Investigate account activity and source IP.,alert_001
+Unusual Access Time,medium,user_002 successfully accessed the system at 2026-09-03 02:15:00.,evt_0127,Verify whether off-hours activity was expected.,alert_002
+Privilege Mismatch,high,user_001 has standard access but attempted an action requiring admin access.,evt_0128,Review account permissions and attempted activity.,alert_003
+Unusual Network Context,medium,Connection used port 23 with protocol TCP.,evt_0129,Determine whether the network connection was authorized.,alert_004
