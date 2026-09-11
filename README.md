@@ -20,7 +20,31 @@ This is an educational prototype.
 
 It is not intended for real banking, fraud-prevention, or cybersecurity decisions.
 
----
+# Testing and Quality Assurance
+
+The project includes automated testing using pytest.
+
+Tests cover:
+
+- Fraud data loading
+- Missing and malformed fraud data
+- Fraud preprocessing
+- Feature engineering
+- Fraud model probability outputs
+- Security-log validation
+- Invalid protocols
+- Invalid timestamps
+- Repeated failed-login detection
+- Unusual access-time detection
+- Privilege mismatch detection
+- Unusual network-context detection
+- LLM output structure
+- Missing API-key handling
+
+Run the complete test suite with:
+
+```bash
+python -m pytest -q
 
 ## Current Project Status
 
@@ -32,7 +56,7 @@ It is not intended for real banking, fraud-prevention, or cybersecurity decision
 | Phase 4 | Cybersecurity log analysis and detection rules | Complete |
 | Phase 5 | LLM-assisted security alert explanations | Complete |
 | Phase 6 | Responsible AI, security, privacy, and escalation | Complete |
-| Phase 7 | Testing, debugging, and final portfolio polish | Not yet complete |
+| Phase 7 | Testing, debugging, and final portfolio polish | Complete |
 
 ---
 
