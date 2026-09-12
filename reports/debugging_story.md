@@ -1,24 +1,16 @@
-# Phase 7 Debugging Story
+# Debugging Note: LLM Output Validation
 
 ## Problem
 
-During final testing, I identified that the LLM analyst module
-accepted any non-empty response from the language model.
+While testing the LLM analyst module, I noticed that any non-empty response would be accepted. That meant the program could save an explanation even if the model ignored the requested structure.
 
-This meant a response could be accepted even if it failed to
-include the required analyst sections.
+## Cause
 
-## Root Cause
-
-The original validation only checked whether the LLM response
-was empty.
-
-It did not verify whether the required structured sections were
-present.
+The first validation check only tested whether the response was empty. It did not confirm that the required sections were present.
 
 ## Fix
 
-I added an LLM output validation function that requires:
+I added `validate_llm_output()` to require these sections:
 
 - Summary
 - Evidence
@@ -26,16 +18,8 @@ I added an LLM output validation function that requires:
 - Recommended Analyst Checks
 - Uncertainty / Limitations
 
-If any required section is missing, the program raises a clear
-error instead of accepting the response.
+If one is missing, the function raises an error instead of accepting the response.
 
-## Regression Test
+## Regression test
 
-I added automated pytest coverage that supplies a deliberately
-malformed LLM response.
-
-The test verifies that the malformed response raises an error.
-
-This prevents the same issue from silently returning in future
-changes.
-
+I added a pytest case with a deliberately incomplete response and verified that it raises `ValueError`. This gives the output contract a simple automated check and helps prevent the same issue from being reintroduced later.

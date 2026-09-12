@@ -2,86 +2,43 @@
 
 ## Purpose
 
-This phase uses synthetic authentication and network-style
-security logs to demonstrate basic security-event monitoring
-and rule-based alert detection.
+This part of the project uses synthetic authentication and network-style logs to practice basic security monitoring and rule-based alert detection. No real customer data, employee data, credentials, or private network logs are used.
 
-No real customer data, employee data, credentials, or private
-network logs are used.
+## Detection rules
 
-## Detection Rules
+### Repeated failed logins
 
-### Repeated Failed Logins
+Five or more failed login attempts from the same user and source IP within ten minutes are flagged for review. This could be password guessing, but it could also be a user repeatedly entering the wrong password.
 
-The system flags five or more failed login attempts from the
-same user and source IP within ten minutes.
+### Unusual access time
 
-This can indicate password guessing or attempted unauthorized
-access, but it does not prove that an attack occurred.
+Successful access between 10:00 PM and 6:00 AM is flagged. Off-hours access can be legitimate, so this rule is only a reason to investigate further.
 
-### Unusual Access Time
+### Privilege mismatch
 
-Successful access between 10:00 PM and 6:00 AM is flagged for
-review.
+An alert is created when a user's assigned access level is lower than the access level required for the attempted action. This can point to a permissions issue, a user mistake, or potentially unauthorized activity.
 
-Off-hours access may be legitimate, so the alert requires
-human investigation.
+### Unusual network context
 
-### Privilege Mismatch
+The synthetic environment treats TCP port 443 as the normal connection pattern. Other ports or protocols are flagged so they can be reviewed.
 
-The system flags activity when a user's assigned access level
-is lower than the access level required for the attempted
-action.
+## False positives
 
-This helps identify possible authorization or least-privilege
-issues.
+Each rule can produce benign alerts. Failed logins may come from an outdated saved password. Off-hours access may be approved maintenance. A privilege mismatch may come from a configuration problem. An unusual port may be tied to an authorized administrative tool.
 
-### Unusual Network Context
-
-The synthetic environment normally uses TCP port 443.
-
-Connections using another port or protocol are flagged for
-review.
-
-## False Positives and Benign Explanations
-
-A repeated failed-login alert could occur because a user forgot
-their password or has an old password saved on a device.
-
-An unusual-time alert could occur because an employee is
-working late, traveling, or performing approved maintenance.
-
-An unusual network connection could be caused by an approved
-administrative or troubleshooting tool rather than malicious
-activity.
-
-A privilege mismatch could also be caused by an incorrectly
-configured account or application rather than an attacker.
+For that reason, the detector does not label an event as a confirmed attack. It creates an alert with the evidence that triggered the rule.
 
 ## Limitations
 
-The data is synthetic and does not represent a real enterprise
-environment.
+- The data is synthetic and much simpler than a real enterprise environment.
+- Detection thresholds are project assumptions, not production security policies.
+- The rules can produce false positives and false negatives.
+- The project does not include endpoint telemetry, identity-provider context, threat intelligence, or a full SIEM environment.
 
-The thresholds are student-project assumptions rather than
-American Express security policies.
+## Analyst follow-up
 
-Rule-based detection can produce both false positives and false
-negatives.
+A real investigation could include checking account history, confirming the user and device, reviewing the source IP, looking at recent permission changes, correlating related events, and deciding whether the activity was expected.
 
-An alert represents suspicious activity that should be
-investigated. It does not confirm that a security incident
-occurred.
+## Privacy and security
 
-## Human Analyst Next Steps
-
-A human analyst could review account history, verify the user
-and device, investigate the source IP, check recent permission
-changes, review related events, and determine whether the
-activity was expected before taking action.
-
-## Privacy and Security
-
-Real passwords, API keys, customer information, employee
-identifiers, private network logs, and other sensitive
-information should never be committed to this public project.
+Real passwords, API keys, customer information, employee identifiers, private network logs, and other sensitive information should not be committed to this public repository.

@@ -1,86 +1,103 @@
-# Secure Fraud & Access Risk Analysis System
+# Secure Fraud & Access Risk Analysis
 
-A Python-based portfolio project that combines fraud detection, cybersecurity log analysis, and LLM-assisted analyst explanations with responsible AI, privacy, and human-review controls.
+This project combines three related pieces of analysis in one Python repository: credit-card fraud detection, rule-based security-event monitoring, and LLM-assisted alert explanations.
 
-This project was built as preparation for entry-level AI engineering and cybersecurity roles.
+The goal was to build a small end-to-end prototype rather than only train a model. The project includes data validation, preprocessing, model comparison, security detection rules, LLM output checks, and automated tests.
 
----
+> This is an educational prototype using public or synthetic data. It is not intended for real banking, fraud-prevention, or cybersecurity decisions.
 
-## Project Overview
+## What the project does
 
-The Secure Fraud & Access Risk Analysis System contains three main components:
+### Fraud detection
 
-1. A machine-learning system for detecting potentially fraudulent credit-card transactions.
-2. A rule-based cybersecurity system for detecting suspicious authentication and access behavior.
-3. An LLM-assisted analyst tool that explains security alerts using supplied evidence.
+The fraud workflow loads and validates transaction data, creates stratified train/validation/test splits, preprocesses the features, and compares several models:
 
-The project also documents responsible AI risks, security limitations, privacy considerations, and human escalation requirements.
+- Logistic Regression
+- class-balanced Logistic Regression
+- Random Forest
+- Random Forest with a log-transformed transaction amount
 
-This is an educational prototype.
+The final Random Forest model produced the strongest overall validation results and was evaluated once on the held-out test set. The test results were:
 
-It is not intended for real banking, fraud-prevention, or cybersecurity decisions.
+- Precision: **0.9508**
+- Recall: **0.7838**
+- F1: **0.8593**
+- PR-AUC: **0.8203**
 
-# Testing and Quality Assurance
+More detail is available in `reports/fraud_model_results.md`.
 
-The project includes automated testing using pytest.
+### Security-event analysis
 
-Tests cover:
+The security portion uses synthetic authentication and network-style logs. It checks for:
 
-- Fraud data loading
-- Missing and malformed fraud data
-- Fraud preprocessing
-- Feature engineering
-- Fraud model probability outputs
-- Security-log validation
-- Invalid protocols
-- Invalid timestamps
-- Repeated failed-login detection
-- Unusual access-time detection
-- Privilege mismatch detection
-- Unusual network-context detection
-- LLM output structure
-- Missing API-key handling
+- repeated failed logins
+- successful access at unusual hours
+- privilege mismatches
+- unexpected port or protocol use
 
-Run the complete test suite with:
+The rules create structured alerts for review rather than treating an alert as proof of an incident.
+
+### LLM-assisted explanations
+
+Security alerts can be passed to an LLM through the OpenAI API. The model is instructed to use only the supplied evidence, separate observations from possible explanations, state uncertainty, and leave decisions to a human analyst.
+
+The response is also checked for a required structure before it is accepted. Example outputs are in `reports/llm_examples.md`.
+
+## Project structure
+
+```text
+data/
+    security_logs.csv
+models/
+notebooks/
+    01_data_exploration.ipynb
+reports/
+    debugging_story.md
+    fraud_model_results.md
+    llm_examples.md
+    responsible_ai_and_security.md
+    security_findings.md
+src/
+    data_loader.py
+    data_splitter.py
+    generate_security_logs.py
+    llm_analyst.py
+    pipeline.py
+    preprocessing.py
+    run_llm_analysis.py
+    run_security_analysis.py
+    security_detector.py
+    security_log_loader.py
+    train_fraud_model.py
+    validation.py
+tests/
+requirements.txt
+```
+
+## Testing
+
+The repository includes pytest coverage for data loading, validation, preprocessing, model probability output, security-log validation, detection rules, LLM output structure, and missing API-key handling.
+
+Run the tests with:
 
 ```bash
 python -m pytest -q
+```
 
-## Current Project Status
+## Setup
 
-| Phase | Description | Status |
-|---|---|---|
-| Phase 1 | Repository setup and fraud data exploration | Complete |
-| Phase 2 | Data validation and preprocessing pipeline | Complete |
-| Phase 3 | Machine-learning model training and evaluation | Complete |
-| Phase 4 | Cybersecurity log analysis and detection rules | Complete |
-| Phase 5 | LLM-assisted security alert explanations | Complete |
-| Phase 6 | Responsible AI, security, privacy, and escalation | Complete |
-| Phase 7 | Testing, debugging, and final portfolio polish | Complete |
+Install the project dependencies with:
 
----
+```bash
+pip install -r requirements.txt
+```
 
-# System Architecture
+The original credit-card fraud dataset is not committed to the repository. Place it at `data/creditcard.csv` before running the fraud workflow.
 
-```mermaid
-flowchart TD
+To use the LLM component, set an `OPENAI_API_KEY` environment variable before running `src/run_llm_analysis.py`.
 
-    A[Credit Card Fraud Dataset] --> B[Data Validation]
-    B --> C[Train / Validation / Test Split]
-    C --> D[Preprocessing]
-    D --> E[Logistic Regression]
-    D --> F[Random Forest]
-    E --> G[Model Evaluation]
-    F --> G
-    G --> H[Final Fraud Prediction Results]
+## Responsible use
 
-    I[Synthetic Security Logs] --> J[Security Log Validation]
-    J --> K[Rule-Based Detection]
-    K --> L[Structured Security Alerts]
-    L --> M[LLM Analyst Explanation]
-    M --> N[Human Analyst Review]
+The project uses synthetic security logs and does not contain real customer records, employee data, credentials, or private network data. Model predictions and security alerts are treated as signals for human review rather than automatic decisions.
 
-    O[Responsible AI / Security Controls] --> H
-    O --> L
-    O --> M
-    O --> N
+See `reports/responsible_ai_and_security.md` for the main limitations and safeguards considered in the project.

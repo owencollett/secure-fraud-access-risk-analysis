@@ -25,11 +25,11 @@ def main():
     )
 
     print(
-        f"Loaded {len(alerts)} Phase 4 alerts."
+        f"Loaded {len(alerts)} security alerts."
     )
 
-    # Add one deliberately benign-looking case
-    # so the LLM must discuss uncertainty.
+    # Include one benign-looking case to test whether the
+    # explanation handles uncertainty instead of assuming an attack.
     benign_example = {
         "alert_id": "alert_benign_example",
         "rule_name": "Unusual Access Time",
@@ -50,7 +50,6 @@ def main():
         benign_example
     )
 
-    # We need at least five examples.
     selected_alerts = alerts[:5]
 
     if len(selected_alerts) < 5:
