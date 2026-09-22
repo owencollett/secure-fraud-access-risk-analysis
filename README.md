@@ -16,6 +16,7 @@ The fraud workflow loads and validates transaction data, creates stratified trai
 - class-balanced Logistic Regression
 - Random Forest
 - Random Forest with a log-transformed transaction amount
+- a simple PyTorch neural network experiment
 
 The final Random Forest model produced the strongest overall validation results and was evaluated once on the held-out test set. The test results were:
 
@@ -25,6 +26,25 @@ The final Random Forest model produced the strongest overall validation results 
 - PR-AUC: **0.8203**
 
 More detail is available in `reports/fraud_model_results.md`.
+
+### Simple PyTorch experiment
+
+The repository also includes a beginner-friendly PyTorch model in `src/train_pytorch_model.py`. It reuses the same transaction split and preprocessing steps as the other fraud models.
+
+The neural network is intentionally small:
+
+- input transaction features
+- one hidden layer with 32 neurons
+- ReLU activation
+- one output value for fraud probability
+
+It trains for 10 epochs and reports Precision, Recall, F1, ROC-AUC, and PR-AUC on the validation set. This experiment is included to compare a basic neural-network approach with the scikit-learn models without adding unnecessary complexity.
+
+Run it with:
+
+```bash
+python -m src.train_pytorch_model
+```
 
 ### Security-event analysis
 
@@ -69,6 +89,7 @@ src/
     security_detector.py
     security_log_loader.py
     train_fraud_model.py
+    train_pytorch_model.py
     validation.py
 tests/
 requirements.txt
